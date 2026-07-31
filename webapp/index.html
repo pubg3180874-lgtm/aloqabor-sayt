@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AloqaBor — Tezkor ariza</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10182B;
+    --blue:#2E5BFF;
+    --blue-soft:#EEF2FF;
+    --paper:#FFFFFF;
+    --mist:#F5F7FB;
+    --muted:#606A80;
+    --line:#E6E9F2;
+    --danger:#E0453C;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:32px;
+  }
+  h1,h2,.display{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    font-weight:800;
+    letter-spacing:-0.02em;
+    margin:0;
+  }
+  .wrap{padding:20px 18px 8px;}
+
+  .brand{display:flex;align-items:baseline;gap:2px;font-size:18px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:18px;}
+  .brand .a1{color:var(--ink);}
+  .brand .a2{color:var(--blue);}
+
+  .title{font-size:23px;line-height:1.25;margin-bottom:6px;}
+  .subtitle{color:var(--muted);font-size:14px;margin-bottom:26px;}
+
+  .field{margin-bottom:18px;}
+  .field label{
+    display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:8px;
+  }
+  .field input, .field textarea{
+    width:100%;
+    padding:13px 14px;
+    border:1.5px solid var(--line);
+    border-radius:12px;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    background:var(--mist);
+    transition:border-color .15s, background .15s;
+  }
+  .field input:focus, .field textarea:focus{
+    outline:none;border-color:var(--blue);background:#fff;
+  }
+  .field textarea{resize:none;min-height:80px;font-family:'Inter',sans-serif;}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px;}
+  .hint.error{color:var(--danger);}
+
+  .chip-group{display:flex;flex-direction:column;gap:10px;}
+  .chip{
+    display:flex;align-items:center;gap:10px;
+    padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;
+    background:var(--mist);cursor:pointer;font-size:14px;font-weight:500;
+    transition:border-color .15s, background .15s;
+  }
+  .chip .dot{
+    width:18px;height:18px;border-radius:50%;border:2px solid #C6CCDB;
+    flex-shrink:0;position:relative;transition:border-color .15s;
+  }
+  .chip.active{border-color:var(--blue);background:var(--blue-soft);}
+  .chip.active .dot{border-color:var(--blue);}
+  .chip.active .dot::after{
+    content:"";position:absolute;inset:3px;border-radius:50%;background:var(--blue);
+  }
+
+  .progress{
+    display:flex;gap:6px;margin-bottom:22px;
+  }
+  .progress .seg{flex:1;height:4px;border-radius:999px;background:var(--line);transition:background .2s;}
+  .progress .seg.done{background:var(--blue);}
+
+  .success{
+    display:none;flex-direction:column;align-items:center;text-align:center;
+    padding:60px 24px;
+  }
+  .success .icon{
+    width:64px;height:64px;border-radius:50%;background:var(--blue-soft);
+    display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:20px;
+  }
+  .success h2{font-size:20px;margin-bottom:10px;}
+  .success p{color:var(--muted);font-size:14px;max-width:280px;}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="formView">
+  <div class="brand"><span class="a1">aloqa</span><span class="a2">bor</span></div>
+
+  <div class="progress">
+    <div class="seg done" id="seg1"></div>
+    <div class="seg" id="seg2"></div>
+    <div class="seg" id="seg3"></div>
+  </div>
+
+  <div class="title">Tezkor ariza qoldiring</div>
+  <div class="subtitle">Ma'lumotlaringizni to'ldiring — mutaxassisimiz tez orada bog'lanadi.</div>
+
+  <div class="field">
+    <label for="fullName">F.I.Sh</label>
+    <input type="text" id="fullName" placeholder="Ismingiz va familiyangiz" autocomplete="name">
+    <div class="hint" id="nameHint"></div>
+  </div>
+
+  <div class="field">
+    <label for="phone">Telefon raqami</label>
+    <input type="tel" id="phone" placeholder="+998 90 123 45 67" autocomplete="tel">
+    <div class="hint" id="phoneHint"></div>
+  </div>
+
+  <div class="field">
+    <label>Qaysi xizmat kerak?</label>
+    <div class="chip-group" id="serviceGroup">
+      <div class="chip" data-value="☎️ Call-center xizmati">
+        <span class="dot"></span> ☎️ Call-center xizmati
+      </div>
+      <div class="chip" data-value="🤖 Bot yaratish">
+        <span class="dot"></span> 🤖 Bot yaratish
+      </div>
+      <div class="chip" data-value="🤝 Ikkalasi ham">
+        <span class="dot"></span> 🤝 Ikkalasi ham
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="comment">Izoh <span style="color:var(--muted);font-weight:400;">(ixtiyoriy)</span></label>
+    <textarea id="comment" placeholder="Qo'shimcha savol yoki izohingiz..."></textarea>
+  </div>
+</div>
+
+<div class="success" id="successView">
+  <div class="icon">🎉</div>
+  <h2>Ariza yuborildi!</h2>
+  <p>Tez orada mutaxassislarimiz siz bilan bog'lanadi. AloqaBor'ni tanlaganingiz uchun tashakkur!</p>
+</div>
+
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+  tg.expand();
+
+  const fullNameInput = document.getElementById('fullName');
+  const phoneInput = document.getElementById('phone');
+  const commentInput = document.getElementById('comment');
+  const nameHint = document.getElementById('nameHint');
+  const phoneHint = document.getElementById('phoneHint');
+  const chips = document.querySelectorAll('.chip');
+  const seg2 = document.getElementById('seg2');
+  const seg3 = document.getElementById('seg3');
+
+  // Agar Telegram profil ma'lumoti mavjud bo'lsa, ismni oldindan to'ldiramiz
+  const tgUser = tg.initDataUnsafe && tg.initDataUnsafe.user;
+  if (tgUser) {
+    const prefill = [tgUser.first_name, tgUser.last_name].filter(Boolean).join(' ');
+    if (prefill) fullNameInput.value = prefill;
+  }
+
+  let selectedService = '';
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      selectedService = chip.dataset.value;
+      validate();
+    });
+  });
+
+  function isValidPhone(value) {
+    const cleaned = value.replace(/[\s-]/g, '');
+    return /^\+?\d{9,15}$/.test(cleaned);
+  }
+
+  function validate() {
+    const nameOk = fullNameInput.value.trim().length >= 3;
+    const phoneOk = isValidPhone(phoneInput.value.trim());
+    const serviceOk = selectedService !== '';
+
+    seg2.classList.toggle('done', nameOk && phoneOk);
+    seg3.classList.toggle('done', serviceOk);
+
+    const allOk = nameOk && phoneOk && serviceOk;
+
+    if (allOk) {
+      tg.MainButton.setText('✅ Yuborish');
+      tg.MainButton.show();
+      tg.MainButton.enable();
+    } else {
+      tg.MainButton.hide();
+    }
+    return allOk;
+  }
+
+  fullNameInput.addEventListener('input', () => {
+    nameHint.textContent = '';
+    validate();
+  });
+  phoneInput.addEventListener('input', () => {
+    phoneHint.textContent = '';
+    validate();
+  });
+  commentInput.addEventListener('input', validate);
+
+  tg.MainButton.onClick(() => {
+    if (!validate()) return;
+
+    const payload = {
+      full_name: fullNameInput.value.trim(),
+      phone: phoneInput.value.trim(),
+      service_type: selectedService,
+      comment: commentInput.value.trim(),
+    };
+
+    tg.MainButton.showProgress();
+    tg.sendData(JSON.stringify(payload));
+  });
+
+  // Boshlang'ich holatda MainButton yashirin (validatsiya o'tmaguncha)
+  tg.MainButton.hide();
+</script>
+
+</body>
+</html>
